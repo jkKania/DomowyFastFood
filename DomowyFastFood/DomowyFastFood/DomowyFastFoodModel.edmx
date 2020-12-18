@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DomowyFastFoodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Klient">
+          <Key>
+            <PropertyRef Name="ID_Klienta" />
+          </Key>
+          <Property Name="ID_Klienta" Type="int" Nullable="false" />
+          <Property Name="Nick" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adres" Type="varchar" MaxLength="50" />
+          <Property Name="Telefon" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DomowyFastFood.dbo.Pracownik' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Pracownik">
+          <Key>
+            <PropertyRef Name="ID_Pracownika" />
+            <PropertyRef Name="Nick" />
+            <PropertyRef Name="Password" />
+            <PropertyRef Name="Autoryzacja" />
+          </Key>
+          <Property Name="ID_Pracownika" Type="int" Nullable="false" />
+          <Property Name="Nick" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Autoryzacja" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Restauracja">
+          <Key>
+            <PropertyRef Name="ID_Restauracji" />
+          </Key>
+          <Property Name="ID_Restauracji" Type="int" Nullable="false" />
+          <Property Name="NazwaRestauracji" Type="nvarchar" MaxLength="50" />
+          <Property Name="DanieDnia" Type="nvarchar(max)" />
+          <Property Name="Adres" Type="nvarchar" MaxLength="50" />
+          <Property Name="Telefon" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Zamowienie">
+          <Key>
+            <PropertyRef Name="ID_Zamowienia" />
+          </Key>
+          <Property Name="ID_Zamowienia" Type="int" Nullable="false" />
+          <Property Name="ID_Klienta" Type="int" Nullable="false" />
+          <Property Name="ID_Restauracji" Type="int" Nullable="false" />
+          <Property Name="DanieDnia" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DataZamowienia" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Zamowienie_Klient">
+          <End Role="Klient" Type="Self.Klient" Multiplicity="1" />
+          <End Role="Zamowienie" Type="Self.Zamowienie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klient">
+              <PropertyRef Name="ID_Klienta" />
+            </Principal>
+            <Dependent Role="Zamowienie">
+              <PropertyRef Name="ID_Klienta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zamowienie_Restauracja">
+          <End Role="Restauracja" Type="Self.Restauracja" Multiplicity="1" />
+          <End Role="Zamowienie" Type="Self.Zamowienie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restauracja">
+              <PropertyRef Name="ID_Restauracji" />
+            </Principal>
+            <Dependent Role="Zamowienie">
+              <PropertyRef Name="ID_Restauracji" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DomowyFastFoodModelStoreContainer">
+          <EntitySet Name="Klient" EntityType="Self.Klient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Restauracja" EntityType="Self.Restauracja" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zamowienie" EntityType="Self.Zamowienie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pracownik" EntityType="Self.Pracownik" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Pracownik].[ID_Pracownika] AS [ID_Pracownika], 
+    [Pracownik].[Nick] AS [Nick], 
+    [Pracownik].[Password] AS [Password], 
+    [Pracownik].[Autoryzacja] AS [Autoryzacja]
+    FROM [dbo].[Pracownik] AS [Pracownik]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Zamowienie_Klient" Association="Self.FK_Zamowienie_Klient">
+            <End Role="Klient" EntitySet="Klient" />
+            <End Role="Zamowienie" EntitySet="Zamowienie" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zamowienie_Restauracja" Association="Self.FK_Zamowienie_Restauracja">
+            <End Role="Restauracja" EntitySet="Restauracja" />
+            <End Role="Zamowienie" EntitySet="Zamowienie" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DomowyFastFoodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Klient">
+          <Key>
+            <PropertyRef Name="ID_Klienta" />
+          </Key>
+          <Property Name="ID_Klienta" Type="Int32" Nullable="false" />
+          <Property Name="Nick" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Adres" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Telefon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Zamowienies" Relationship="Self.FK_Zamowienie_Klient" FromRole="Klient" ToRole="Zamowienie" />
+        </EntityType>
+        <EntityType Name="Restauracja">
+          <Key>
+            <PropertyRef Name="ID_Restauracji" />
+          </Key>
+          <Property Name="ID_Restauracji" Type="Int32" Nullable="false" />
+          <Property Name="NazwaRestauracji" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DanieDnia" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Adres" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Telefon" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Zamowienies" Relationship="Self.FK_Zamowienie_Restauracja" FromRole="Restauracja" ToRole="Zamowienie" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Zamowienie">
+          <Key>
+            <PropertyRef Name="ID_Zamowienia" />
+          </Key>
+          <Property Name="ID_Zamowienia" Type="Int32" Nullable="false" />
+          <Property Name="ID_Klienta" Type="Int32" Nullable="false" />
+          <Property Name="ID_Restauracji" Type="Int32" Nullable="false" />
+          <Property Name="DanieDnia" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DataZamowienia" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Klient" Relationship="Self.FK_Zamowienie_Klient" FromRole="Zamowienie" ToRole="Klient" />
+          <NavigationProperty Name="Restauracja" Relationship="Self.FK_Zamowienie_Restauracja" FromRole="Zamowienie" ToRole="Restauracja" />
+        </EntityType>
+        <EntityType Name="Pracownik">
+          <Key>
+            <PropertyRef Name="ID_Pracownika" />
+            <PropertyRef Name="Nick" />
+            <PropertyRef Name="Password" />
+            <PropertyRef Name="Autoryzacja" />
+          </Key>
+          <Property Name="ID_Pracownika" Type="Int32" Nullable="false" />
+          <Property Name="Nick" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Autoryzacja" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Zamowienie_Klient">
+          <End Role="Klient" Type="Self.Klient" Multiplicity="1" />
+          <End Role="Zamowienie" Type="Self.Zamowienie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klient">
+              <PropertyRef Name="ID_Klienta" />
+            </Principal>
+            <Dependent Role="Zamowienie">
+              <PropertyRef Name="ID_Klienta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zamowienie_Restauracja">
+          <End Role="Restauracja" Type="Self.Restauracja" Multiplicity="1" />
+          <End Role="Zamowienie" Type="Self.Zamowienie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restauracja">
+              <PropertyRef Name="ID_Restauracji" />
+            </Principal>
+            <Dependent Role="Zamowienie">
+              <PropertyRef Name="ID_Restauracji" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DomowyFastFoodContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Klients" EntityType="Self.Klient" />
+          <EntitySet Name="Restauracjas" EntityType="Self.Restauracja" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Zamowienies" EntityType="Self.Zamowienie" />
+          <EntitySet Name="Pracowniks" EntityType="Self.Pracownik" />
+          <AssociationSet Name="FK_Zamowienie_Klient" Association="Self.FK_Zamowienie_Klient">
+            <End Role="Klient" EntitySet="Klients" />
+            <End Role="Zamowienie" EntitySet="Zamowienies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zamowienie_Restauracja" Association="Self.FK_Zamowienie_Restauracja">
+            <End Role="Restauracja" EntitySet="Restauracjas" />
+            <End Role="Zamowienie" EntitySet="Zamowienies" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DomowyFastFoodModelStoreContainer" CdmEntityContainer="DomowyFastFoodContext">
+          <EntitySetMapping Name="Klients">
+            <EntityTypeMapping TypeName="DomowyFastFoodModel.Klient">
+              <MappingFragment StoreEntitySet="Klient">
+                <ScalarProperty Name="ID_Klienta" ColumnName="ID_Klienta" />
+                <ScalarProperty Name="Nick" ColumnName="Nick" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Adres" ColumnName="Adres" />
+                <ScalarProperty Name="Telefon" ColumnName="Telefon" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Restauracjas">
+            <EntityTypeMapping TypeName="DomowyFastFoodModel.Restauracja">
+              <MappingFragment StoreEntitySet="Restauracja">
+                <ScalarProperty Name="ID_Restauracji" ColumnName="ID_Restauracji" />
+                <ScalarProperty Name="NazwaRestauracji" ColumnName="NazwaRestauracji" />
+                <ScalarProperty Name="DanieDnia" ColumnName="DanieDnia" />
+                <ScalarProperty Name="Adres" ColumnName="Adres" />
+                <ScalarProperty Name="Telefon" ColumnName="Telefon" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="DomowyFastFoodModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zamowienies">
+            <EntityTypeMapping TypeName="DomowyFastFoodModel.Zamowienie">
+              <MappingFragment StoreEntitySet="Zamowienie">
+                <ScalarProperty Name="ID_Zamowienia" ColumnName="ID_Zamowienia" />
+                <ScalarProperty Name="ID_Klienta" ColumnName="ID_Klienta" />
+                <ScalarProperty Name="ID_Restauracji" ColumnName="ID_Restauracji" />
+                <ScalarProperty Name="DanieDnia" ColumnName="DanieDnia" />
+                <ScalarProperty Name="DataZamowienia" ColumnName="DataZamowienia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pracowniks">
+            <EntityTypeMapping TypeName="DomowyFastFoodModel.Pracownik">
+              <MappingFragment StoreEntitySet="Pracownik">
+                <ScalarProperty Name="ID_Pracownika" ColumnName="ID_Pracownika" />
+                <ScalarProperty Name="Nick" ColumnName="Nick" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Autoryzacja" ColumnName="Autoryzacja" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
